@@ -49,8 +49,9 @@ void Edamp_cpu(real dt) {
   real rho_cell;
   real e_old;
   real e_eq;
-  real dt_over_tau;
-  real denom;
+  real inv_t_cool;
+  real gas_pre;
+  real delta_erg;
 
 #ifndef __GPU
   static int first = 1;
@@ -107,8 +108,9 @@ void Edamp_cpu(real dt) {
           /* == Only cool the gas fluid == */
           if (fluidtype == GAS && beta > 0.0 && cs2 > 0.0 && omk > 0.0) {
 
-            /* tau_c = beta / Omega_K */
+            /* Athena style: inv_t_cool = Omega_K / beta */
             tauc = beta / omk;
+            inv_t_cool = omk / beta;
 
             rho_cell = rho[ll];
             if (rho_cell > 0.0) {
@@ -121,15 +123,13 @@ void Edamp_cpu(real dt) {
               e_eq = rho_cell * cs2 / (gam - 1.0);
               if (e_eq <= 0.0) e_eq = 1e-30;
 
-              dt_over_tau = dt / tauc;
-              if (dt_over_tau > 100.0) dt_over_tau = 100.0;
-
-              denom = 1.0 + dt_over_tau;
-              if (denom > 0.0 && isfinite(denom)) {
-
-                /* implicit beta–cooling update:
-                   e^{n+1} = (e^n + (dt/tau) e_eq) / (1 + dt/tau) */
-                e[ll] = (e_old + dt_over_tau * e_eq) / denom;
+              /* Athena thermal relaxation:
+                 delta_erg = (P - rho*cs2_init)/(gamma-1) * (Omega_K/beta) * dt
+                 e^{n+1} = e^n - delta_erg */
+              gas_pre = (gam - 1.0) * e_old;
+              delta_erg = (gas_pre - rho_cell * cs2) / (gam - 1.0) * inv_t_cool * dt;
+              e[ll] = e_old - delta_erg;
+              if (!(e[ll] > 0.0) || !isfinite(e[ll])) e[ll] = e_eq;
 
 #ifndef __GPU
                 if (!isfinite(e[ll]) || !isfinite(rho_cell) ||
@@ -143,7 +143,6 @@ void Edamp_cpu(real dt) {
                   exit(1);
                 }
 #endif /* !__GPU */
-              }
             }
           }
 #endif /* BETACOOLING */

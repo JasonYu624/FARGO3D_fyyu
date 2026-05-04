@@ -33,7 +33,7 @@ DUST_TVCAP_TOP_N_PHYS_LEVELS 5    Stretched-mesh proxy for Athena top-N physical
 ### Near-planet free-fall cap (Athena++ style)
 DUST_VCAP_FLAG      1      Enable near-planet velocity cap (0=off, 1=on)
 DUST_VCAP_FACTOR    2.0    Free-fall cap factor
-DUST_VCAP_RADIUS_RATIO 0.1  Planet Hill radius fraction for cap region
+DUST_VCAP_RADIUS_RATIO 1.0  Planet Hill radius fraction for cap region
 # Anomaly check (Athena style)
 ANOMALY_CHECK_FLAG            0    Enable 26-neighbor anomaly check (0=off, 1=on)
 ANOMALY_CHECK_R_RATIO         0.5  Radius ratio for anomaly check region
@@ -47,7 +47,7 @@ RELATIVE_MEDIAN_CAP_RHO_FLOOR_FACTOR 0.1 Optional rho_d raise for median-capped 
 ### Planet parameters
 
 PlanetConfig        planets/modelC_J1e-4.cfg
-RocheSmoothing          0.10
+RocheSmoothing          0.6
 Eccentricity            0.0
 IndirectTerm            yes
 
@@ -81,5 +81,5 @@ DT			0.314159265359	Time step length
 Ninterm	 		100		Time steps between outputs
 Ntot			30000		Total number of time steps
 
-FuncArchFile    setups/B_a_3D/func_arch.cfg
-OutputDir		@outputs/B_a_3D
+FuncArchFile    setups/C_b_3D/func_arch.cfg
+OutputDir		@outputs/C_b_3D

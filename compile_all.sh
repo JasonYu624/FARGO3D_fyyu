@@ -4,7 +4,7 @@ cd /home/fyyu/projects/def-evelee/fyyu/Dust_trap/fargo3d
 
 module load cuda/12.6
 
-all_setups="B_a_3D B_b_3D B_c_3D C_a_3D C_b_3D C_c_3D B_a_3D_gas B_b_3D_gas B_c_3D_gas C_a_3D_gas C_b_3D_gas C_c_3D_gas"
+all_setups="B_a_3D_gas B_a_3D B_b_3D_gas B_b_3D B_c_3D B_c_3D_gas C_a_3D C_a_3D_gas C_b_3D C_b_3D_gas C_c_3D C_c_3D_gas"
 
 for setup in $all_setups; do
     echo "=== Building $setup ==="

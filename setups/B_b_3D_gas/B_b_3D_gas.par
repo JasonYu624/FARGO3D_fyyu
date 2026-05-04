@@ -20,7 +20,7 @@ DUSTFLOOR       1.0e-6
 GASFLOOR         1.0e-7     Absolute gas density floor
 ENERGYFLOOR      1.0e-10    Energy floor for adiabatic EOS
 DUST_PERCENT_FLOOR  0.0    Dust percent floor (0 = disabled)
-DUST_TVCAP_FLAG     0      Enable terminal-velocity cap (0=off, 1=on)
+DUST_TVCAP_FLAG     1      Enable terminal-velocity cap (0=off, 1=on)
 DUST_TVCAP_FACTOR   2.0    TV-cap multiplier (Athena default 2.0)
 DUST_TVCAP_D2G_MAX  1.0e-3  Max dust-to-gas ratio for TV-cap trigger
 DUST_TVCAP_RHO_FLOOR_FACTOR  2.0e4  Rho floor factor for D2G gating (Athena default 2e4)
@@ -30,21 +30,21 @@ DUST_TVCAP_MACH_OVERRIDE     8.0  Force cap when |v_d|/cs exceeds this
 DUST_TVCAP_Z_HG_RATIO        2.5  Altitude threshold (in scale heights) for override
 DUST_TVCAP_TOP_N_PHYS_LEVELS 5    Stretched-mesh proxy for Athena top-N physical levels
 ### Near-planet free-fall cap (Athena++ style)
-DUST_VCAP_FLAG      0      Enable near-planet velocity cap (0=off, 1=on)
+DUST_VCAP_FLAG      1      Enable near-planet velocity cap (0=off, 1=on)
 DUST_VCAP_FACTOR    2.0    Free-fall cap factor
-DUST_VCAP_RADIUS_RATIO 0.1  Planet Hill radius fraction for cap region
+DUST_VCAP_RADIUS_RATIO 1.0  Planet Hill radius fraction for cap region
 # Anomaly check (Athena style)
 ANOMALY_CHECK_FLAG            0    Enable 26-neighbor anomaly check (0=off, 1=on)
 ANOMALY_CHECK_R_RATIO         0.5  Radius ratio for anomaly check region
 ANOMALY_CHECK_HILL_RATIO      2.0  Hill radius ratio for anomaly check
 # Relative median cap (Athena style)
-RELATIVE_MEDIAN_CAP_FLAG      0    Enable 6-neighbor median cap (0=off, 1=on)
+RELATIVE_MEDIAN_CAP_FLAG      1    Enable 6-neighbor median cap (0=off, 1=on)
 RELATIVE_MEDIAN_CAP_FACTOR   4.0  Median cap factor
 
 ### Planet parameters
 
 PlanetConfig        planets/modelB_J3e-4.cfg
-RocheSmoothing          0.10
+RocheSmoothing          0.6
 Eccentricity            0.0
 IndirectTerm            yes
 
@@ -77,5 +77,5 @@ DT			0.314159265359	Time step length
 Ninterm	 		100		Time steps between outputs
 Ntot			2000		Total number of time steps
 
-FuncArchFile    setups/B_a_3D_gas/func_arch.cfg
-OutputDir		@outputs/B_a_3D
+FuncArchFile    setups/B_b_3D_gas/func_arch.cfg
+OutputDir		@outputs/B_b_3D

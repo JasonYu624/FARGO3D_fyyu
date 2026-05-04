@@ -3,7 +3,7 @@
 # standard setup of the former FARGO code including a gas disk with multiple 
 # dust species.
 # In order to run it, do:
-# make SETUP=modelB_3D_beta
+# make SETUP=modelB_3D_beta_gas
 # fargo3d setups/modelB_3D_beta/modelB_3D_beta.par
 # END
 #-------------------------------------------------------------------------
@@ -44,6 +44,9 @@ FARGO_OPT += -DSTOCKHOLM
 
 FARGO_OPT += -DLONGSUMMARY
 
+#Non-uniform
+#FARGO_OPT += -DRAM
+
 #Speedup
 FARGO_OPT += -DWARPSHUFFLE
 
@@ -53,8 +56,12 @@ FARGO_OPT += -DBETACOOLING
 #Floor
 FARGO_OPT += -DFLOOR
 
+#Athena-style diffusion reductions
+FARGO_OPT += -DPLANET_DIFF_REDUCTION=1
+FARGO_OPT += -DDUSTDIFFD2G_REDUCTION=1
+
 ifeq (${GPU}, 1)
 FARGO_OPT += -DBLOCK_X=32
-FARGO_OPT += -DBLOCK_Y=4
-FARGO_OPT += -DBLOCK_Z=2
+FARGO_OPT += -DBLOCK_Y=2
+FARGO_OPT += -DBLOCK_Z=1
 endif
