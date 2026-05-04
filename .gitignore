@@ -17,5 +17,5 @@ std/.lastflags.old
 *.bak
 *tests.log
 mp.pro
-*.sh
+# *.sh
 *.out
