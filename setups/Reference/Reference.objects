@@ -1,2 +1,0 @@
-MAINOBJ += edamp.o
-GPUOBJ  += edamp_gpu.o
