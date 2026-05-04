@@ -79,6 +79,14 @@ void Sources(real dt) {
 
   // NOW: Vx INITIAL X VELOCITY, Vx_temp UPDATED X VELOCITY FROM SOURCE TERMS + ARTIFICIAL VISCOSITY
 
+#ifdef BETACOOLING
+  Edamp(dt);
+#endif
+
+#ifdef PLANETARY_ACCRETION
+  Accretion(dt);
+#endif
+
 #ifdef ADIABATIC
  if(Fluidtype == GAS) FARGO_SAFE(SubStep3(dt));
 #endif

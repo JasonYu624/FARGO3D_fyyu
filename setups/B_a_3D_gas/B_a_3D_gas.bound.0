@@ -1,0 +1,34 @@
+# modelB_3D.bound.0
+# Fluid 0: gas
+# Geometry: 3D cylindrical (X=phi periodic, Y=R, Z=z)
+# Radial (Y) and vertical (Z) boundaries are set to analytical ICs.
+
+Density:
+        Ymin: MODELBGAS3DDENSRAD
+        Ymax: MODELBGAS3DDENSRAD
+        Zmin: MODELBGAS3DDENSCOL
+        Zmax: MODELBGAS3DDENSCOL
+
+Energy:
+        Ymin: MODELBGAS3DENERGYRAD
+        Ymax: MODELBGAS3DENERGYRAD
+        Zmin: MODELBGAS3DENERGYCOL
+        Zmax: MODELBGAS3DENERGYCOL
+
+Vx:     # azimuthal velocity v_phi,g
+        Ymin: MODELBGAS3DVPHIRAD
+        Ymax: MODELBGAS3DVPHIRAD
+        Zmin: MODELBGAS3DVPHICOL
+        Zmax: MODELBGAS3DVPHICOL
+
+Vy:     # radial velocity v_R,g
+        Ymin: MODELBGAS3DVRRAD
+        Ymax: MODELBGAS3DVRRAD
+        Zmin: MODELBGAS3DVRCOL
+        Zmax: MODELBGAS3DVRCOL
+
+Vz:     # vertical velocity v_z,g
+        Ymin: MODELBGAS3DVZ
+        Ymax: MODELBGAS3DVZ
+        Zmin: MODELBGAS3DVZ
+        Zmax: MODELBGAS3DVZ

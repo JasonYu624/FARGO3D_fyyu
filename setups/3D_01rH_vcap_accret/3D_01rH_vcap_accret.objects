@@ -1,0 +1,2 @@
+MAINOBJ += edamp.o accretion.o
+GPUOBJ  += edamp_gpu.o accretion_gpu.o

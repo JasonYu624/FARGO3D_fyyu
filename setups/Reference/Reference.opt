@@ -1,0 +1,63 @@
+# BEGIN
+# The "modelB_3D_beta" setup is the 3D setup that corresponds to the
+# standard setup of the former FARGO code including a gas disk with multiple 
+# dust species.
+# In order to run it, do:
+# make SETUP=modelB_3D_beta_gas
+# fargo3d setups/modelB_3D_beta/modelB_3D_beta.par
+# END
+#-------------------------------------------------------------------------
+# Warning: You have to define the following numbers according
+# to your condinit.c file.
+# If you need N-fluids, write: FLUIDS := 0 1 2 ... N-1
+# (replace "..." with a complete list) and NFLUIDS = N
+
+FLUIDS := 0 1
+NFLUIDS = 2
+FARGO_OPT += -DNFLUIDS=${NFLUIDS}
+#-----------------------------------------------------------
+
+MONITOR_SCALAR = MASS | MOM_X | TORQ
+MONITOR_Y_RAW  = TORQ
+
+FARGO_OPT +=  -DX
+FARGO_OPT +=  -DY
+FARGO_OPT +=  -DZ
+
+#Equation of State
+FARGO_OPT +=  -DADIABATIC
+
+#Coordinate System.
+FARGO_OPT += -DSPHERICAL
+
+#Disk
+FARGO_OPT += -DPOTENTIAL
+FARGO_OPT += -DALPHAVISCOSITY
+
+#Drag force between species
+FARGO_OPT += -DDRAGFORCE
+FARGO_OPT += -DSTOKESNUMBER
+FARGO_OPT += -DDUSTDIFFUSION
+
+#Damping conditions
+FARGO_OPT += -DSTOCKHOLM
+
+FARGO_OPT += -DLONGSUMMARY
+
+#Non-uniform
+FARGO_OPT += -DRAM
+
+#Speedup
+FARGO_OPT += -DWARPSHUFFLE
+
+#Cooling
+FARGO_OPT += -DBETACOOLING
+
+#Floor
+FARGO_OPT += -DFLOOR
+
+ifeq (${GPU}, 1)
+FARGO_OPT += -DBLOCK_X=32
+FARGO_OPT += -DBLOCK_Y=2
+FARGO_OPT += -DBLOCK_Z=1
+endif

@@ -411,6 +411,11 @@ ex void _OhmicDiffusion_emf_cpu (int,int,int,int,int,int,int,int, int,Field*, Fi
 
 ex void OhmicDiffusion_coeff_cpu(void);
 
+//Cooling prototypes
+ex void Edamp_cpu(real);
+//Accretion prototypes
+ex void Accretion_cpu(real);
+
 //timeinfo.c Prototypes
 ex void GiveTimeInfo (int);
 ex void InitSpecificTime (TimeProcess *, char *);
@@ -611,6 +616,10 @@ ex void AmbipolarDiffusion_coeff_gpu(void);
 //Ohmic diffusion prototypes
 ex void _OhmicDiffusion_emf_gpu (int,int,int,int,int,int,int,int,int,Field*,Field*,Field*);
 ex void OhmicDiffusion_coeff_gpu(void);
+//Cooling prototypes
+ex void Edamp_gpu(real);
+//Accretion prototypes
+ex void Accretion_gpu(real);
 
 ex void StockholmBoundary_gpu(real);
 

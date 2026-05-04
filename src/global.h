@@ -33,6 +33,8 @@ boolean ThereArePlanets = NO;
 boolean ThereIsACentralBinary = NO;
 real    PhysicalTimeInitial;
 real    PhysicalTime = 0;
+real    AccretedGasMassRun = 0;
+real    AccretedDustMassRun = 0;
 real    XAxisRotationAngle = 0.0;
 char    NewOutputdir[1024];
 char    VersionString[1024];
@@ -389,6 +391,9 @@ void (*AmbipolarDiffusion_emfx)();
 void (*AmbipolarDiffusion_emfy)();
 void (*AmbipolarDiffusion_emfz)();
 void (*AmbipolarDiffusion_coeff)();
+
+void (*Edamp)(real);
+void (*Accretion)(real);
 //.............................................
 
 void (*StockholmBoundary)(real);

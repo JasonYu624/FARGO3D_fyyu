@@ -178,6 +178,15 @@ void DustDiffusion_Core_cpu(real dt) {
 #endif
 #endif // Z
       	temp[ll] = rhod[ll] + dt*update; // Density update
+// =====================================================================
+        // DEBUG: 捕获负密度或 NaN (单行极简版，防 GPU 刷屏)
+        // =====================================================================
+        if (temp[ll] != temp[ll] || temp[ll] < 0.0) {
+            printf("[BOMB] i=%d, j=%d, k=%d | dt=%e | rhog=%e, rhod=%e, c=%e | update=%e\n", 
+                   i, j, k, dt, rhog[ll], rhod[ll], c, update);
+            return; 
+        }
+        // =====================================================================
 //<\#>
 #ifdef X
       }

@@ -142,12 +142,22 @@ void Summary (int nout) {
   time_t t;
   struct tm tm;
   int i, type, n;
+  real local_acc[2];
+  real global_acc[2];
   if (FirstTime == YES) {
     StoreFileToChar (&InputFile, ParameterFile);
     if (ThereArePlanets)
       StoreFileToChar (&PlanetaryFile, PLANETCONFIG);
     FirstTime = NO;
   }
+  local_acc[0] = AccretedGasMassRun;
+  local_acc[1] = AccretedDustMassRun;
+#ifdef FLOAT
+  MPI_Allreduce(local_acc, global_acc, 2, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
+#else
+  MPI_Allreduce(local_acc, global_acc, 2, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+#endif
+
   if (CPU_Master) {
     sprintf (filename, "%s/summary%d.dat", OUTPUTDIR, nout);
     sum = fopen_prs (filename, "w");
@@ -195,6 +205,9 @@ void Summary (int nout) {
     fprintf(sum, "(%d-%d-%d %02d:%02d:%02d)\n", tm.tm_year + 1900,\
 	    tm.tm_mon + 1, tm.tm_mday, tm.tm_hour,\
 	    tm.tm_min, tm.tm_sec);
+    fprintf (sum, "\n%sACCRETION DIAGNOSTICS SECTION:\n%s", sep, sep);
+    fprintf (sum, "Cumulative accreted gas mass in current run\t%.15g\n", global_acc[0]);
+    fprintf (sum, "Cumulative accreted dust mass in current run\t%.15g\n", global_acc[1]);
     fprintf (sum, "\n%sPREPROCESSOR MACROS SECTION:\n%s",sep,sep);
     DUMP_PPVAR (R0);
     DUMP_PPVAR (R_MU);

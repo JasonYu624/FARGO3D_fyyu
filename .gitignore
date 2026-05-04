@@ -1,7 +1,7 @@
 *TEST/*
 bin/*
 outputs/*
-fargo3d
+# fargo3d
 arch/*
 scripts/bound_*.code
 src/rescale.c
@@ -17,3 +17,5 @@ std/.lastflags.old
 *.bak
 *tests.log
 mp.pro
+*.sh
+*.out

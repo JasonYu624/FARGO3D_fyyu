@@ -109,6 +109,11 @@ void visctensor_sph_cpu(){
 // real NU(1);
 // real GAMMA(1);
 // real ALPHA(1);
+// real Xplanet(1);
+// real Yplanet(1);
+// real Zplanet(1);
+// real MplanetVirtual(1);
+// real ROCHESMOOTHING(1);
 // real Sxi(Nx);
 // real Sxj(Ny+2*NGHY);
 // real Syj(Ny+2*NGHY);
@@ -144,11 +149,69 @@ void visctensor_sph_cpu(){
 	viscosityzm   = ALPHA*0.0625*(energy[l]+energy[lzm]+energy[lxm]+energy[lxm-stride])*(energy[l]+energy[lzm]+energy[lxm]+energy[lxm-stride])*sqrt(ymed(j)*ymed(j)*ymed(j)/(G*MSTAR));
 	viscosityzmym = ALPHA*0.0625*(energy[l]+energy[lzm]+energy[lym]+energy[lym-stride])*(energy[l]+energy[lzm]+energy[lym]+energy[lym-stride])*sqrt(ymin(j)*ymin(j)*ymin(j)/(G*MSTAR));
 #else
-	viscosity     = ALPHA*GAMMA*(GAMMA-1.0)*energy[l]/rho[l]*sqrt(ymed(j)*ymed(j)*ymed(j)/(G*MSTAR));	
+	viscosity     = ALPHA*GAMMA*(GAMMA-1.0)*energy[l]/rho[l]*sqrt(ymed(j)*ymed(j)*ymed(j)/(G*MSTAR));
 	viscositym    = ALPHA*GAMMA*(GAMMA-1.0)*(energy[l]+energy[lxm]+energy[lym]+energy[lxm-pitch])/(rho[l]+rho[lxm]+rho[lym]+rho[lxm-pitch])*sqrt(ymin(j)*ymin(j)*ymin(j)/(G*MSTAR));
 	viscosityzm   = ALPHA*GAMMA*(GAMMA-1.0)*(energy[l]+energy[lzm]+energy[lxm]+energy[lxm-stride])/(rho[l]+rho[lzm]+rho[lxm]+rho[lxm-stride])*sqrt(ymed(j)*ymed(j)*ymed(j)/(G*MSTAR));
 	viscosityzmym = ALPHA*GAMMA*(GAMMA-1.0)*(energy[l]+energy[lym]+energy[lzm]+energy[lym-stride])/(rho[l]+rho[lym]+rho[lzm]+rho[lym-stride])*sqrt(ymin(j)*ymin(j)*ymin(j)/(G*MSTAR));
 #endif
+
+// Athena-style planetary viscosity reduction
+// nu_eff = nu * min(1, Omega_K / sqrt(Omega_K^2 + Omega_p^2))
+#ifdef PLANET_DIFF_REDUCTION
+		{
+		  // Cell position in spherical coordinates
+		  real r_s = ymed(j);
+#ifdef Z
+		  real th = zmed(k);
+		  real phi = xmed(i);
+		  real x_c = r_s * sin(th) * cos(phi);
+		  real y_c = r_s * sin(th) * sin(phi);
+		  real z_c = r_s * cos(th);
+#else
+		  real x_c = r_s;
+		  real y_c = 0.0;
+		  real z_c = 0.0;
+#endif
+
+		  // Planet position (co-rotating frame)
+		  real px = Xplanet;
+		  real py = Yplanet;
+		  real pz = Zplanet;
+		  real planet_gm = G * MplanetVirtual;
+		  real rs2 = ROCHESMOOTHING * ROCHESMOOTHING;
+
+		  // Distance to planet
+		  real dx = x_c - px;
+		  real dy = y_c - py;
+		  real dz = z_c - pz;
+		  real dist2 = dx*dx + dy*dy + dz*dz;
+
+		  // Cylindrical radius for Omega_K
+#ifdef Z
+		  real R_cyl = r_s * sin(th);
+#else
+		  real R_cyl = r_s;
+#endif
+		  if (R_cyl < 1e-12) R_cyl = 1e-12;
+
+		  real omega_k2 = G * MSTAR / (R_cyl * R_cyl * R_cyl);
+		  real soft_d3  = pow(dist2 + rs2, 1.5);
+		  real omega_p2 = (soft_d3 > 1e-30) ? planet_gm / soft_d3 : 0.0;
+		  real omega_k  = sqrt(omega_k2);
+		  real omega_eff = sqrt(omega_k2 + omega_p2);
+
+		  // Reduction factor
+		  real reduction = (omega_eff > 1e-30) ? omega_k / omega_eff : 1.0;
+		  if (reduction > 1.0) reduction = 1.0;
+
+		  // Apply to all viscosity components
+		  viscosity     *= reduction;
+		  viscositym    *= reduction;
+		  viscosityzm   *= reduction;
+		  viscosityzmym *= reduction;
+		}
+#endif
+
 #else
 	viscosityzmym =  viscosityzm = viscositym = viscosity = NU;
 #endif
