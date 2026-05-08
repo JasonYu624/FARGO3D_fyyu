@@ -17,7 +17,7 @@ module load StdEnv/2023
 module load cuda/12.6
 module load openmpi/4.1.5
 
-cd /home/fyyu/projects/def-evelee/fyyu/Dust_trap/fargo3d
+cd /home/fyyu/projects/rrg-rbdong/fyyu/FARGO3D_fyyu
 
 export OMP_NUM_THREADS=1
 export OMPI_MCA_opal_cuda_support=true
