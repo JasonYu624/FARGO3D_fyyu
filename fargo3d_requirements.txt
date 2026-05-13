@@ -19,7 +19,7 @@ decorator==5.2.1+computecanada
 defusedxml==0.7.1+computecanada
 executing==2.2.1+computecanada
 fastjsonschema==2.21.2+computecanada
-fonttools==4.61.0
+fonttools>=4.60,<4.63
 fqdn==1.5.1+computecanada
 h11==0.16.0+computecanada
 h5py==3.15.0+computecanada
