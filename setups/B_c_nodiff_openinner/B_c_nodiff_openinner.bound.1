@@ -1,0 +1,30 @@
+# modelB_3D.bound.1
+# Fluid 1: dust
+# Inner radial BC matches Athena++ DUST_OPEN_BC: zero-gradient dust density
+# and tangential velocities, with the radial dust velocity limited to v_R <= 0.
+# The outer radial BC is intentionally retained from B_c_nodiff to isolate
+# the inner-boundary effect.
+
+Density:
+        Ymin: SYMMETRIC
+        Ymax: MODELBDUST3DDENSRAD
+        Zmin: DUSTZERO
+        Zmax: DUSTZERO
+
+Vx:     # azimuthal velocity v_phi,d
+        Ymin: SYMMETRIC
+        Ymax: MODELBDUST3DVPHIRAD
+        Zmin: MODELBDUST3DVPHICOL
+        Zmax: MODELBDUST3DVPHICOL
+
+Vy:     # radial velocity v_R,d
+        Ymin: DUST_OPEN_INNER_VR
+        Ymax: MODELBDUST3DVRRAD
+        Zmin: DUSTZEROV
+        Zmax: DUSTZEROV
+
+Vz:     # vertical velocity v_z,d = 0
+        Ymin: SYMMETRIC
+        Ymax: MODELBDUST3DVZ
+        Zmin: DUSTZEROV
+        Zmax: DUSTZEROV

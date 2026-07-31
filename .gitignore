@@ -3,6 +3,9 @@ bin/*
 outputs/*
 # fargo3d
 arch/*
+/fargo3d
+setups/**/fargo3d
+setups/**/fargo3d.sha256
 scripts/bound_*.code
 src/rescale.c
 std/.lastflags

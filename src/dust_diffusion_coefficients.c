@@ -48,7 +48,7 @@ void DustDiffusion_Coefficients_cpu() {
   real* sdiff_yczf = Sdiffyczf->field_cpu;
   real* sdiff_yfzf = Sdiffyfzf->field_cpu;
 #endif
-#ifdef ALPHAVISCOSITY  
+#ifdef ALPHAVISCOSITY
 #ifdef ISOTHERMAL
   real* cs = Fluids[0]->Energy->field_cpu;
 #endif
@@ -69,7 +69,7 @@ void DustDiffusion_Coefficients_cpu() {
   int size_z = Nz+2*NGHZ;
   real* rhod_field = Density->field_cpu;
 //<\EXTERNAL>
-  
+
 //<INTERNAL>
   int i;
   int j;
@@ -149,7 +149,7 @@ void DustDiffusion_Coefficients_cpu() {
 #endif // ADIABATIC
 	r3yczc = ymed(j)*ymed(j)*ymed(j);
 	r3yfzc = ymin(j)*ymin(j)*ymin(j);
-  St = 1.0 / 10.0;
+	St = 1.0 / invstokes;
   correction = 1.0 / (1.0 + St * St);
 	sdiff_yczc[ll] = alphavisc*soundspeed2/sqrt(G*MSTAR/r3yczc)*correction;
 	sdiff_yfzc[ll] = alphavisc*soundspeedf2/sqrt(G*MSTAR/r3yfzc)*correction;

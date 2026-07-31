@@ -1,0 +1,5 @@
+# Rorqual H100 profile, validated on 2026-07-31.
+FARGO_CLUSTER_NAME=rorqual
+FARGO_CUDA_MODULE=cuda/12.6
+FARGO_MPI_MODULE=openmpi/4.1.5
+FARGO_CUDA_ARCH=sm_90
