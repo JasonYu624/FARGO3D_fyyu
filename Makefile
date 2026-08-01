@@ -8,7 +8,7 @@ else
 endif
 
 all:
-	@-${PYTHON} ${SCRIPTSDIR}/make.py ${MAKEFLAGS}
+	@${PYTHON} ${SCRIPTSDIR}/make.py ${MAKEFLAGS}
 help:
 	@echo "\n=================================="
 	@echo "Basic options of the build process"
@@ -23,11 +23,11 @@ help:
 	@echo "\n* Example: to perform a GPU, serial built of the setup 'fargo' issue:\n  'make SETUP=fargo PARALLEL=0 GPU=1'"
 	@echo "\nWarning: in case of trouble with the build, as some dependencies may be broken, try to issue 'make mrproper' and redo the build by specifying explicitly all options."
 clean:
-	@-${PYTHON} ${SCRIPTSDIR}/make.py clean
+	@${PYTHON} ${SCRIPTSDIR}/make.py clean
 	@-rm -f src/rescale.c
 	@-rm -fr arch/
 mrproper:
-	@-${PYTHON} ${SCRIPTSDIR}/make.py clean
+	@${PYTHON} ${SCRIPTSDIR}/make.py clean
 	@-rm -f std/.lastflags*
 	@-rm -f src/rescale.c
 	@-rm -f bin/*

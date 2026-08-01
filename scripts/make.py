@@ -67,7 +67,10 @@ def complete_parameters(base,params):
     return params
 
 def check_coherence(base,params):
-    for key in params.keys():
+    # Command-line make flags can add disposable entries (for example '--').
+    # Iterate over a snapshot because this function removes such entries.
+    # Python 3.13 raises RuntimeError when a live dictionary view is modified.
+    for key in list(params):
             if key in base:
                 continue
             else:
