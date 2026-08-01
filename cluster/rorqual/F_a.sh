@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=F_a
 #SBATCH --account=def-evelee
-#SBATCH --partition=gpubase_bygpu_b5
 #SBATCH --time=72:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4

@@ -15,8 +15,10 @@ sbatch cluster/rorqual/F_a.sh
 sbatch cluster/rorqual/B_c_nodiff_openinner.sh
 ```
 
-Each job requests four complete H100 GPUs in `gpubase_bygpu_b5` under
-`def-evelee`, loads `StdEnv/2023`, `cuda/12.6`, and `openmpi/4.1.5`, builds
+Each job requests four complete H100 GPUs under `def-evelee` and leaves
+partition selection to the Alliance scheduler, which then selects a compatible
+H100 partition for that account. It loads `StdEnv/2023`, `cuda/12.6`, and
+`openmpi/4.1.5`, builds
 both paired FARGO3D executables serially on the target compute node with
 `sm_90`, and then runs gas relaxation followed by the dust restart. The code
 is located from the submission script, so the checkout can live at a different
