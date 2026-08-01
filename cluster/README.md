@@ -5,8 +5,10 @@ These are self-locating Slurm launchers for the `F_a` and corrected
 older top-level launchers, which contain historical, cluster-specific absolute
 paths.
 
-On the target cluster, use a clean clone in a durable filesystem and submit
-the launcher that matches that cluster:
+On the target cluster, use a clean clone in a durable filesystem, `cd` to its
+repository root, and submit the launcher that matches that cluster. The
+launcher uses Slurm's `SLURM_SUBMIT_DIR`; this is necessary because Slurm
+executes a spooled copy of the batch script rather than the original file.
 
 ```bash
 sbatch cluster/fir/F_a.sh
@@ -20,9 +22,8 @@ partition selection to the Alliance scheduler, which then selects a compatible
 H100 partition for that account. It loads `StdEnv/2023`, `cuda/12.6`, and
 `openmpi/4.1.5`, builds
 both paired FARGO3D executables serially on the target compute node with
-`sm_90`, and then runs gas relaxation followed by the dust restart. The code
-is located from the submission script, so the checkout can live at a different
-path on Fir and Rorqual.
+`sm_90`, and then runs gas relaxation followed by the dust restart. The
+checkout can live at a different path on Fir and Rorqual.
 
 By default, results are written to the cluster-local
 `$SCRATCH/FARGO3D_fyyu/{fir,rorqual}/<model>` and the repository's ignored

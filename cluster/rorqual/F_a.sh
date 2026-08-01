@@ -9,5 +9,9 @@
 #SBATCH --mem=160G
 #SBATCH --output=slurm-%x-%j.out
 
-repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)
+repo_root=${FARGO_REPO_ROOT:-${SLURM_SUBMIT_DIR:?Submit this job from the FARGO3D repository root.}}
+if [[ ! -f "$repo_root/cluster/run_control.sh" ]]; then
+  echo "ERROR: repository root is not valid: $repo_root" >&2
+  exit 2
+fi
 source "$repo_root/cluster/run_control.sh" F_a "$repo_root/cluster/profiles/rorqual-h100.sh"
