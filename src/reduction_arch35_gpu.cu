@@ -13,6 +13,18 @@
 #define LOCAL_BLOCK_Z  1   /// DO NOT CHANGE - IMPORTANT
 #define WARPSIZE  32
 
+// CUDA 9 introduced the explicit active-lane mask and CUDA 12 no longer
+// exposes the legacy three-argument __shfl_down intrinsic.  Every warp used
+// below is fully active (LOCAL_BLOCK_X is a multiple of WARPSIZE), so the
+// full-warp mask preserves the original reduction semantics.
+#if defined(CUDART_VERSION) && (CUDART_VERSION >= 9000)
+#define FARGO_SHFL_DOWN(value, delta, width) \
+  __shfl_down_sync(0xffffffffu, (value), (delta), (width))
+#else
+#define FARGO_SHFL_DOWN(value, delta, width) \
+  __shfl_down((value), (delta), (width))
+#endif
+
 
 __global__ void kernel_reduction(macro) (real *array, real *array_int, int pitch, int stride,\
 					 int pitchb, int pitchj, int pitchk, int ymin, int ymax,\
@@ -45,12 +57,12 @@ __global__ void kernel_reduction(macro) (real *array, real *array_int, int pitch
 #ifndef FLOAT
     asm volatile("mov.b64 {%0,%1}, %2;":"=r"(lo),"=r"(hi):"d"(wdata));
     // Shuffle the two 32b registers.
-    lo = __shfl_down(lo,s,32);
-    hi = __shfl_down(hi,s,32);
+    lo = FARGO_SHFL_DOWN(lo,s,32);
+    hi = FARGO_SHFL_DOWN(hi,s,32);
     // Recreate the 64b number.
     asm volatile("mov.b64 %0,{%1,%2};":"=d"(shuffle):"r"(lo),"r"(hi));	
 #else
-    shuffle = __shfl_down(wdata,s,WARPSIZE);
+    shuffle = FARGO_SHFL_DOWN(wdata,s,WARPSIZE);
 #endif
     wdata = macro (wdata,shuffle);
   }
@@ -66,12 +78,12 @@ __global__ void kernel_reduction(macro) (real *array, real *array_int, int pitch
 #ifndef FLOAT
     asm volatile("mov.b64 {%0,%1}, %2;":"=r"(lo),"=r"(hi):"d"(wdata));
     // Shuffle the two 32b registers.
-    lo = __shfl_down(lo,s,32);
-    hi = __shfl_down(hi,s,32);
+    lo = FARGO_SHFL_DOWN(lo,s,32);
+    hi = FARGO_SHFL_DOWN(hi,s,32);
     // Recreate the 64b number.
     asm volatile("mov.b64 %0,{%1,%2};":"=d"(shuffle):"r"(lo),"r"(hi));	
 #else
-    shuffle = __shfl_down(wdata,s,WARPSIZE);
+    shuffle = FARGO_SHFL_DOWN(wdata,s,WARPSIZE);
 #endif
     wdata = macro (wdata,shuffle);
      }

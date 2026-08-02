@@ -188,6 +188,13 @@ line = make + " -j{0:d} ".format(njobs)
 for key in final_params.keys():
     line += key + "=" + final_params[key] + " "
 
+# Cluster launchers set this after probing the allocated GPU.  Keep the
+# architecture override outside the sticky setup flags, while still passing it
+# to the internal make invocation that actually calls nvcc.
+cuda_arch = os.environ.get("FARGO_CUDA_ARCH")
+if cuda_arch:
+    line += "CUDAOPT_LINUX=-O3 -w -arch=" + cuda_arch + " "
+
 line += " allp"
 
 os.system(line)

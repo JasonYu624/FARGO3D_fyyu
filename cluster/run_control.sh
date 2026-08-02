@@ -84,6 +84,7 @@ mpirun --version
 
 export OMP_NUM_THREADS=1
 export OMPI_MCA_opal_cuda_support=true
+export FARGO_CUDA_ARCH
 
 echo "=== $model on $FARGO_CLUSTER_NAME ===" | tee "$output_target/launch.log"
 echo "Started: $(date --iso-8601=seconds)" | tee -a "$output_target/launch.log"
@@ -112,7 +113,7 @@ build_setup() {
   # FARGO3D's make wrapper does not accept GNU make's -j flag.  Build each
   # target serially because they share bin/ intermediates.
   make SETUP="$setup" UNITS=0 RESCALE=0 GPU=1 PARALLEL=1 MPICUDA=1 \
-    CUDAOPT_LINUX="-O3 -w -arch=$FARGO_CUDA_ARCH" 2>&1 | tee "$output_target/build_${setup}.log"
+    2>&1 | tee "$output_target/build_${setup}.log"
   test -x fargo3d
   install -m 0755 fargo3d "setups/$setup/fargo3d"
   sha256sum "setups/$setup/fargo3d" > "setups/$setup/fargo3d.sha256"
