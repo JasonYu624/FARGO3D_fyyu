@@ -193,7 +193,10 @@ for key in final_params.keys():
 # to the internal make invocation that actually calls nvcc.
 cuda_arch = os.environ.get("FARGO_CUDA_ARCH")
 if cuda_arch:
-    line += "CUDAOPT_LINUX=-O3 -w -arch=" + cuda_arch + " "
+    # Keep this as one shell word.  Otherwise GNU make sees ``-w`` and
+    # ``-arch=...`` as its own command-line options instead of the value of
+    # CUDAOPT_LINUX, prints its usage, and never starts the build.
+    line += "CUDAOPT_LINUX='-O3 -w -arch=" + cuda_arch + "' "
 
 line += " allp"
 
