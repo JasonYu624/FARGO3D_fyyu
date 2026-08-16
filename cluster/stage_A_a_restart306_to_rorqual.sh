@@ -26,23 +26,40 @@ for file in "${required_seed_files[@]}"; do
 done
 
 tmpdir=$(mktemp -d)
-trap 'rm -rf "$tmpdir"' EXIT
+control_socket="$tmpdir/rorqual-ssh-control"
+close_control_master() {
+  ssh -o ControlPath="$control_socket" -O exit "$remote_host" >/dev/null 2>&1 || true
+  rm -rf "$tmpdir"
+}
+trap close_control_master EXIT
 manifest="$tmpdir/$manifest_name"
 (cd "$source_dir" && sha256sum "${required_seed_files[@]}") > "$manifest"
 
 echo "Staging A_a restart output 306 to $remote_host:$remote_seed"
 echo "Source: $source_dir"
 echo "Manifest: $manifest"
-ssh "$remote_host" "mkdir -p '$remote_seed'"
+echo "Establishing one MFA-authenticated SSH connection for the complete transfer..."
+# A single multiplexed connection avoids asking Duo three times (mkdir, rsync,
+# and verification) and is less exposed to transient Rorqual login-node drops.
+ssh -MNf \
+  -o ControlMaster=yes \
+  -o ControlPersist=15m \
+  -o ControlPath="$control_socket" \
+  -o ServerAliveInterval=30 \
+  -o ServerAliveCountMax=4 \
+  "$remote_host"
+
+ssh -o ControlPath="$control_socket" "$remote_host" "mkdir -p '$remote_seed'"
 
 source_paths=()
 for file in "${required_seed_files[@]}"; do
   source_paths+=("$source_dir/$file")
 done
 rsync -av --partial --progress --checksum \
+  -e "ssh -o ControlPath=$control_socket -o ControlMaster=auto -o ServerAliveInterval=30 -o ServerAliveCountMax=4" \
   "${source_paths[@]}" "$manifest" \
   "$remote_host:$remote_seed/"
 
-ssh "$remote_host" "cd '$remote_seed' && sha256sum -c '$manifest_name'"
+ssh -o ControlPath="$control_socket" "$remote_host" "cd '$remote_seed' && sha256sum -c '$manifest_name'"
 echo "Restart seed transferred and checksum-verified on Rorqual."
 echo "Next: git pull --ff-only in $remote_repo, then sbatch cluster/rorqual/A_a_continue600.sh"
