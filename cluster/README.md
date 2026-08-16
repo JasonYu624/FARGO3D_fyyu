@@ -42,3 +42,32 @@ out of scratch before that filesystem's retention deadline.
 `B_c_nodiff_openinner` uses 100-orbit cadence in both stages. Therefore the
 gas relaxation ends at output 1 and the dust release is `-p -S 1`; its 1500P
 completion sentinel is `summary15.dat`.
+
+## A_a continuation on Rorqual
+
+The A_a continuation is a separate, restart-only job.  It resumes the
+validated output-306 checkpoint (1530P) without `-p`, so it preserves the
+already released dust state and stops at output 600 (3000P).  It is intentionally
+not handled by `run_control.sh`, because it does not rerun gas relaxation.
+
+From the Nibi repository, stage the minimum restart bundle interactively (the
+Rorqual login requires MFA):
+
+```bash
+bash cluster/stage_A_a_restart306_to_rorqual.sh
+```
+
+Then on Rorqual, update the same Git checkout and submit from its root:
+
+```bash
+git pull --ff-only
+sbatch --test-only cluster/rorqual/A_a_continue600.sh
+sbatch cluster/rorqual/A_a_continue600.sh
+```
+
+The launcher checks the transferred SHA256 manifest before and after copying
+the checkpoint from the durable checkout to Rorqual scratch.  Its scratch
+target is `$SCRATCH/FARGO3D_fyyu/rorqual/A_a_3D_cont600`, while the temporary
+repository symlink remains `outputs/A_a_3D` because that is the output path in
+the continuation parameter file.  The launcher refuses to overwrite either
+location.
